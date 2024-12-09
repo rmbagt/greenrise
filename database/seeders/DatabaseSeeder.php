@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Enum\PermissionsEnum;
 use App\Enum\RolesEnum;
+use App\Models\Donation;
+use App\Models\Event;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -38,5 +40,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => bcrypt('admin'),
         ])->assignRole(RolesEnum::Admin);
+
+        Event::factory(10)->create();
+        
+        Donation::factory(50)->create();
     }
 }
