@@ -69,7 +69,7 @@ export default function LandingLayout({
 
                 {auth.user ? (
                   <Button variant="secondary" asChild>
-                    <Link href={route("event.index")}>Dashboard</Link>
+                    <Link href={route("dashboard")}>Dashboard</Link>
                   </Button>
                 ) : (
                   <Button variant="secondary" asChild>
@@ -104,7 +104,7 @@ export default function LandingLayout({
                 ))}
                 {auth.user ? (
                   <Button variant="secondary" asChild className="w-full mt-4">
-                    <Link href={route("event.index")}>Dashboard</Link>
+                    <Link href={route("dashboard")}>Dashboard</Link>
                   </Button>
                 ) : (
                   <Button variant="secondary" asChild className="w-full mt-4">
