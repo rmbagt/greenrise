@@ -1,250 +1,207 @@
-import { Link } from "@inertiajs/react";
-import { PageProps, User } from "@/types";
+import { Link, Head } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/Components/ui/carousel";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/Components/ui/select";
+import { PropsWithChildren, ReactNode, useState, useEffect } from "react";
+import { User } from "@/types";
+import { Facebook, Instagram, Linkedin, Twitter, Menu, X } from "lucide-react";
 import { Input } from "@/Components/ui/input";
-import { Search, Calendar, MapPin } from "lucide-react";
-
-const carouselData = [
-  {
-    imageUrl: "/assets/item1.png",
-    title: "Community Beach Cleanup",
-    description:
-      "Join us in cleaning up the beach and making our environment better.",
-    detailUrl: "#",
-  },
-  {
-    imageUrl: "/assets/item2.png",
-    title: "Charity Run for Education",
-    description:
-      "Participate in our charity run to raise funds for underprivileged children's education.",
-    detailUrl: "#",
-  },
-  {
-    imageUrl: "/assets/item1.png",
-    title: "Food Drive for the Homeless",
-    description:
-      "Help us collect and distribute food to the homeless in our community.",
-    detailUrl: "#",
-  },
-];
-
-const events = [
-  {
-    imageUrl: "/assets/event1.webp",
-    title: "Local Park Tree Planting",
-    description:
-      "Join us in planting trees at the local park to promote a greener environment.",
-    date: { month: "APR", day: "14" },
-  },
-  {
-    imageUrl: "/assets/event1.webp",
-    title: "Fundraiser for Animal Shelter",
-    description: "Support our fundraiser to help the local animal shelter.",
-    date: { month: "AUG", day: "20" },
-  },
-  {
-    imageUrl: "/assets/event1.webp",
-    title: "Blood Donation Camp",
-    description:
-      "Donate blood and save lives at our community blood donation camp.",
-    date: { month: "SEP", day: "18" },
-  },
-];
 
 export default function LandingLayout({
+  header,
+  children,
   auth,
-}: PageProps<{ auth: { user: User } }>) {
+}: PropsWithChildren<{
+  header?: ReactNode;
+  auth: {
+    user: User;
+  };
+}>) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const navItems = [
+    ["Home", "/#home"],
+    ["Event", "/#event"],
+    ["Donation", "/#donation"],
+    ["Contact", "/#contact"],
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 70);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-teal-600">
-      {/* Navigation */}
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="text-white text-2xl font-bold">
-            GreenRise
-          </Link>
+    <>
+      <Head title="Landing" />
+      <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-teal-600 !scroll-smooth">
+        {/* Navigation */}
+        <nav
+          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+            isScrolled
+              ? "bg-black/40 shadow-lg backdrop-blur-md "
+              : "bg-transparent backdrop-blur-md"
+          } ${isMenuOpen ? "bg-black" : ""}`}
+        >
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <Link href="/" className="text-white text-2xl font-bold">
+                GreenRise
+              </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="#" className="text-white hover:text-white/80">
-              Home
-            </Link>
-            <Link href="#" className="text-white hover:text-white/80">
-              Events
-            </Link>
-            <Link href="#" className="text-white hover:text-white/80">
-              Donation
-            </Link>
-            <Link href="#" className="text-white hover:text-white/80">
-              Contact
-            </Link>
+              {/* Desktop Menu */}
+              <div className="hidden md:flex items-center space-x-8">
+                {navItems.map(([title, href]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="text-white hover:text-white/80"
+                  >
+                    {title}
+                  </Link>
+                ))}
 
-            {auth.user ? (
-              <Button variant="secondary" asChild>
-                <Link href={route("event.index")}>Dashboard</Link>
-              </Button>
-            ) : (
-              <Button variant="secondary" asChild>
-                <Link href={route("login")}>Login</Link>
-              </Button>
-            )}
+                {auth.user ? (
+                  <Button variant="secondary" asChild>
+                    <Link href={route("event.index")}>Dashboard</Link>
+                  </Button>
+                ) : (
+                  <Button variant="secondary" asChild>
+                    <Link href={route("login")}>Login</Link>
+                  </Button>
+                )}
+              </div>
+
+              {/* Mobile Menu Toggle */}
+              <button
+                className="md:hidden text-white"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-12">
-        <Carousel className="w-full">
-          <CarouselContent>
-            {carouselData.map((item, index) => (
-              <CarouselItem key={index}>
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="rounded-lg w-full object-cover"
-                  />
-                  <div className="space-y-6">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-                      {item.title}
-                    </h1>
-                    <p className="text-lg text-white/90">{item.description}</p>
-                    <div className="flex gap-4">
-                      <Button
-                        size="lg"
-                        className="bg-pink-600 hover:bg-pink-700"
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden ">
+              <div className="container mx-auto px-4 py-4">
+                {navItems.map(([title, href]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="block text-white hover:text-white/80 py-2 font-bold"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {title}
+                  </Link>
+                ))}
+                {auth.user ? (
+                  <Button variant="secondary" asChild className="w-full mt-4">
+                    <Link href={route("event.index")}>Dashboard</Link>
+                  </Button>
+                ) : (
+                  <Button variant="secondary" asChild className="w-full mt-4">
+                    <Link href={route("login")}>Login</Link>
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* Main Content */}
+        <main className="pt-16">{children}</main>
+
+        {/* Footer */}
+        <footer className="bg-black text-white py-12">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">About GreenRise</h3>
+                <p className="text-sm text-gray-400">
+                  GreenRise is dedicated to creating a sustainable future
+                  through community engagement and environmental initiatives.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul className="space-y-2">
+                  {navItems.map(([title, href]) => (
+                    <li key={href}>
+                      <a
+                        href={href}
+                        className="text-sm text-gray-400 hover:text-white transition-colors"
                       >
-                        Donate Now
-                      </Button>
-                      <Button size="lg" variant="outline">
-                        Learn More
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
-        </Carousel>
-      </section>
-
-      {/* Search Section */}
-      <section className="container mx-auto px-4 -mt-6 relative z-10">
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-lg">
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200" />
-              <Input
-                placeholder="Search Event"
-                className="pl-10 bg-white/20 border-0 text-white placeholder:text-white/60"
-              />
-            </div>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200" />
-              <Input
-                placeholder="Place"
-                className="pl-10 bg-white/20 border-0 text-white placeholder:text-white/60"
-              />
-            </div>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200" />
-              <Select>
-                <SelectTrigger className="pl-10 bg-white/20 border-0 text-white">
-                  <SelectValue placeholder="Time" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Any time</SelectItem>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                  <SelectItem value="week">This week</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Events Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-4 md:mb-0">
-            Upcoming Events
-          </h2>
-          <div className="flex gap-4">
-            <Select defaultValue="weekdays">
-              <SelectTrigger className="bg-white/20 border-0 text-white w-[150px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="weekdays">Weekdays</SelectItem>
-                <SelectItem value="weekend">Weekend</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="all">
-              <SelectTrigger className="bg-white/20 border-0 text-white w-[150px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Events</SelectItem>
-                <SelectItem value="community">Community</SelectItem>
-                <SelectItem value="charity">Charity</SelectItem>
-                <SelectItem value="environment">Environment</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden group hover:shadow-xl transition-all"
-            >
-              <div className="relative aspect-video">
-                <img
-                  src={event.imageUrl}
-                  alt={event.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 left-4 bg-white/90 rounded-lg p-2 text-center min-w-[60px]">
-                  <div className="text-sm font-semibold text-purple-600">
-                    {event.date.month}
-                  </div>
-                  <div className="text-2xl font-bold text-purple-900">
-                    {event.date.day}
-                  </div>
+                        {title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+                <div className="flex space-x-4">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <Facebook className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <Twitter className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <Instagram className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <Linkedin className="h-6 w-6" />
+                  </a>
                 </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  {event.title}
-                </h3>
-                <p className="text-white/80">{event.description}</p>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
+                <p className="text-sm text-gray-400 mb-2">
+                  Stay updated with our latest news and events.
+                </p>
+                <form className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                  />
+                  <Button
+                    type="submit"
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    Subscribe
+                  </Button>
+                </form>
               </div>
             </div>
-          ))}
-        </div>
-
-        <div className="flex justify-center mt-12">
-          <Button variant="outline" size="lg">
-            Load More
-          </Button>
-        </div>
-      </section>
-    </div>
+            <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+              <p className="text-sm text-gray-400">
+                © {new Date().getFullYear()} GreenRise. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }

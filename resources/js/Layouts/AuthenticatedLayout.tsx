@@ -10,11 +10,10 @@ export default function Authenticated({
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
   const user = usePage().props.auth.user;
+  const success: any = usePage().props.success;
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
-
-  // console.log(user);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
