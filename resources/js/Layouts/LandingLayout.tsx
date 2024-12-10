@@ -40,7 +40,7 @@ export default function LandingLayout({
   return (
     <>
       <Head title="Landing" />
-      <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-teal-600 !scroll-smooth">
+      <div className="min-h-screen bg-gradient-to-b to-green-400 via-blue-500 from-teal-600 !scroll-smooth">
         {/* Navigation */}
         <nav
           className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -51,9 +51,34 @@ export default function LandingLayout({
         >
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
-              <Link href="/" className="text-white text-2xl font-bold">
-                GreenRise
-              </Link>
+              <div className="flex shrink-0 items-center">
+                <Link
+                  href="/"
+                  className="flex items-center space-x-3 hover:text-green-300"
+                >
+                  <span className="text-2xl font-light tracking-wide text-white transition duration-300">
+                    GreenRise
+                  </span>
+                  <div className="relative w-6 h-6 transition duration-300 text-green-400 hover:text-green-300">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M7 20h10" />
+                      <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+                      <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+                      <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+                    </svg>
+                  </div>
+                </Link>
+              </div>
 
               {/* Desktop Menu */}
               <div className="hidden md:flex items-center space-x-8">
