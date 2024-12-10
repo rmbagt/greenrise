@@ -9,7 +9,7 @@ import {
 } from "@/Components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { Button } from "@/Components/ui/button";
-import { StatsCard } from "@/Components/Dashboard/StatsCard";
+import { StatsCard } from "@/Components/Dashboard/StatsCardProps";
 import { DonationProgress } from "@/Components/Dashboard/DonationProgress";
 import {
   CalendarDays,

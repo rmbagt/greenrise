@@ -31,21 +31,21 @@ import Autoplay from "embla-carousel-autoplay";
 
 const carouselData = [
   {
-    imageUrl: "/assets/item1.png",
+    imageUrl: "/assets/event1.png",
     title: "Community Beach Cleanup",
     description:
       "Join us in cleaning up the beach and making our environment better.",
     detailUrl: "#",
   },
   {
-    imageUrl: "/assets/item2.png",
+    imageUrl: "/assets/event2.png",
     title: "Charity Run for Education",
     description:
       "Participate in our charity run to raise funds for underprivileged children's education.",
     detailUrl: "#",
   },
   {
-    imageUrl: "/assets/item1.png",
+    imageUrl: "/assets/event3.png",
     title: "Food Drive for the Homeless",
     description:
       "Help us collect and distribute food to the homeless in our community.",
@@ -55,20 +55,20 @@ const carouselData = [
 
 const events = [
   {
-    imageUrl: "/assets/event1.webp",
+    imageUrl: "/assets/event4.png",
     title: "Local Park Tree Planting",
     description:
       "Join us in planting trees at the local park to promote a greener environment.",
     date: { month: "APR", day: "14" },
   },
   {
-    imageUrl: "/assets/event1.webp",
+    imageUrl: "/assets/event2.png",
     title: "Fundraiser for Animal Shelter",
     description: "Support our fundraiser to help the local animal shelter.",
     date: { month: "AUG", day: "20" },
   },
   {
-    imageUrl: "/assets/event1.webp",
+    imageUrl: "/assets/event1.png",
     title: "Blood Donation Camp",
     description:
       "Donate blood and save lives at our community blood donation camp.",
