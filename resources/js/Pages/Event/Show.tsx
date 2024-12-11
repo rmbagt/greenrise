@@ -13,14 +13,20 @@ import {
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import * as Avatar from "@radix-ui/react-avatar";
+import { PageProps as InertiaPageProps } from "@inertiajs/core";
 
-export default function Show({
-  event,
-  donators,
-}: {
+interface PageProps extends InertiaPageProps {
   event: Event;
-  donators: Donation[];
-}) {
+  donators: Donation[] | { data: Donation[] };
+}
+
+export default function Show() {
+  const { props } = usePage<PageProps>();
+  const event = props.event;
+  const donators = Array.isArray(props.donators)
+    ? props.donators
+    : props.donators.data || [];
+
   const [amount, setAmount] = useState<number | string>("");
 
   const handlePresetAmount = (presetAmount: number) => {
