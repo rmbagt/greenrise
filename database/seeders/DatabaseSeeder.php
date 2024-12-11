@@ -43,6 +43,6 @@ class DatabaseSeeder extends Seeder
 
         Event::factory(10)->create();
         
-        Donation::factory(10)->create();
+        Donation::factory(20)->create();
     }
 }

@@ -15,7 +15,6 @@ enum RolesEnum: string
         ];
     }
 
-
     public function label()
     {
         return match($this) {
