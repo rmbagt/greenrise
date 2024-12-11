@@ -30,12 +30,15 @@ export default function Show({
   return (
     <AuthenticatedLayout>
       <Head title="Event Details" />
-      <div className="py-12">
+      <div className="py-4">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <Link href={route("event.index")} className="flex items-center w-fit">
-            <ChevronLeft />
-            <p className="text-xl pl-2">Back</p>
-          </Link>
+          <button
+            onClick={() => window.history.back()}
+            className="mb-4 flex items-center w-fit"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </button>
           <div className="w-full h-96 pt-4">
             <img
               src={event.image}

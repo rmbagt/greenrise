@@ -18,7 +18,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('donations')->get();
+        $events = Event::with('donations')->latest()->get();
         // $event = User::with('donations')->get();
         // $donations = $event->donation;
 
@@ -91,14 +91,25 @@ class EventController extends Controller
     public function update(Request $request, Event $event)
     {
         $data = $request->validate([
-            'title' => ['required', 'string'],
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'date' => ['required', 'date'],
-            'image' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'], // 2MB Max
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($event->image && Storage::disk('public')->exists($event->image)) {
+                Storage::disk('public')->delete($event->image);
+            }
+
+            $path = $request->file('image')->store('event', 'public');
+            $data['image'] = Storage::url($path);
+        }
+
         $event->update($data);
 
-        return to_route('event.index')->with('success', 'Event updated successfully.');
+        return to_route('admin.index')->with('success', 'Event updated successfully.');
     }
 
     /**

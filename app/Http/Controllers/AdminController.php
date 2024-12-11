@@ -14,7 +14,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $events = Event::with('donations')->get();
+        $events = Event::with('donations')->latest()->get();
 
         return Inertia::render('Admin/Index', [
             'events' => EventResource::collection($events),

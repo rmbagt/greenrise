@@ -242,7 +242,7 @@ export default function Authenticated({
       )}
 
       <main className="p-4">{children}</main>
-      <Toaster position="top-center" duration={1000} />
+      <Toaster position="top-center" duration={2000} />
     </div>
   );
 }

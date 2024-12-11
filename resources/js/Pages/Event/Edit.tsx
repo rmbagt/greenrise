@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import {
@@ -12,7 +12,7 @@ import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { Label } from "@/Components/ui/label";
-import { CalendarIcon, ChevronLeft, Upload } from "lucide-react";
+import { CalendarIcon, Upload, ChevronLeft } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/Components/ui/calendar";
@@ -21,22 +21,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/Components/ui/popover";
+import { Event } from "@/types";
 
-export default function Create() {
-  const [date, setDate] = useState<Date>();
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export default function Edit({ event }: { event: Event }) {
+  const [date, setDate] = useState<Date | undefined>(new Date(event.date));
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // Changed to null initially
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data, setData, post, processing, errors, progress } = useForm({
-    title: "",
-    description: "",
-    date: "",
-    image: null as File | null,
+  const { data, setData, post, processing, errors, progress } = useForm<{
+    title: string;
+    description: string;
+    date: string;
+    image: File | null;
+    _method: string;
+  }>({
+    title: event.title,
+    description: event.description,
+    date: event.date,
+    image: null,
+    _method: "PUT",
   });
 
+  // The rest of the code remains the same
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route("event.store"), {
+    post(route("event.update", event.id), {
       forceFormData: true,
       preserveScroll: true,
     });
@@ -69,7 +78,7 @@ export default function Create() {
 
   return (
     <AuthenticatedLayout>
-      <Head title="Create New Event" />
+      <Head title="Edit Event" />
 
       <div className="py-4">
         <div className="mx-auto max-w-2xl sm:px-6 lg:px-8">
@@ -83,7 +92,7 @@ export default function Create() {
           <Card className="overflow-hidden bg-white shadow-sm dark:bg-gray-800">
             <CardHeader>
               <CardTitle className="text-2xl font-semibold text-green-800 dark:text-green-200">
-                Create New Event
+                Edit Event
               </CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit}>
@@ -208,7 +217,7 @@ export default function Create() {
                   className="w-full bg-green-600 hover:bg-green-700 text-white"
                   disabled={processing}
                 >
-                  {processing ? "Creating..." : "Create Event"}
+                  {processing ? "Updating..." : "Update Event"}
                 </Button>
               </CardFooter>
             </form>
