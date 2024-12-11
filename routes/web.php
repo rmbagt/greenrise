@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
             return Inertia::render('Dashboard');
         })->name('dashboard');
         
-        Route::get('/event', [EventController::class, 'index'])->name('event.index');
+        Route::resource('/event', EventController::class);
     });
 });
 

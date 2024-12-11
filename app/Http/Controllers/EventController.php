@@ -15,12 +15,12 @@ class EventController extends Controller
      */
     public function index()
     {
-        $paginated = Event::latest()->paginate(10);
-        // $event = User::with('donation')->get();
+        $events = Event::with('donations')->get();
+        // $event = User::with('donations')->get();
         // $donations = $event->donation;
 
         return Inertia::render('Event/Index', [
-            'events' => [EventResource::collection($paginated)],
+            'events' => EventResource::collection($events),
         ]);
     }
 
