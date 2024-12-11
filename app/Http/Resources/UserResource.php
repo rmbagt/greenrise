@@ -19,6 +19,17 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'image' => $this->image,
+            'donations' => $this->donations->map(function ($donation) {
+                return [
+                    'id' => $donation->id,
+                    'event' => $donation->event,
+                    'user' => $donation->user,
+                    'amount' => $donation->amount,
+                    'date' => $donation->date,
+                    'created_at' => $donation->created_at,
+                ];
+            }),
             'email' => $this->email,
         ];
     }

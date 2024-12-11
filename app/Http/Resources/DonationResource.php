@@ -17,8 +17,8 @@ class DonationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'event' => new EventResource($this->whenLoaded('event')),
-            'user' => new UserResource($this->user),
+            'event' => $this->event,
+            'user' => $this->user,
             'amount' => $this->amount,
             'date' => $this->date,
             'created_at' => $this->created_at,

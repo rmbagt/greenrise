@@ -3,10 +3,12 @@ import { Config } from "ziggy-js";
 export interface User {
   id: number;
   name: string;
+  image: string;
   email: string;
   email_verified_at?: string;
   permissions: string[];
   roles: string[];
+  donations: Donation[];
 }
 
 export type PaginatedData<T = any> = {

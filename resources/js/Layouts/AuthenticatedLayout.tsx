@@ -22,7 +22,7 @@ export default function Authenticated({
             <div className="flex">
               <div className="flex shrink-0 items-center">
                 <Link
-                  href="/dashboard"
+                  href="/"
                   className="flex items-center space-x-3 hover:text-green-600"
                 >
                   <span className="text-2xl font-light tracking-wide text-gray-800 dark:text-gray-200 transition duration-300">

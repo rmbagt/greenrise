@@ -8,13 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        "title",
-        "description",
-        "date",
-        "image",
-        "donationTotal"
-    ];
+    protected $guarded = [];
 
     public function donations(){
         return $this->hasMany(Donation::class);

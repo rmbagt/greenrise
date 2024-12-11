@@ -78,11 +78,11 @@ const donationRequests = Array.from({ length: 3 }, (_, i) => ({
 export default function Dashboard() {
   return (
     <AuthenticatedLayout
-      header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-          Dashboard
-        </h2>
-      }
+    // header={
+    //   <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+    //     Dashboard
+    //   </h2>
+    // }
     >
       <Head title="Dashboard" />
 
@@ -177,7 +177,7 @@ export default function Dashboard() {
                     <div key={request.id} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <h4 className="font-medium">{request.title}</h4>
-                        <span className="flex items-center text-sm text-muted-foreground">
+                        <span className="flex items-center text-sm text-muted-foreground w-max text-nowrap">
                           <Clock className="mr-1 h-4 w-4" />
                           {request.deadline}
                         </span>
