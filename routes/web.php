@@ -25,9 +25,9 @@ Route::middleware('auth')->group(function () {
             return Inertia::render('Dashboard');
         })->name('dashboard');
         
-        Route::resource('event', EventController::class)->except(['index', 'show'])->middleware('role:' . RolesEnum::Admin->value);
-
         Route::resource('admin', AdminController::class)->middleware('role:' . RolesEnum::Admin->value);
+        
+        Route::resource('event', EventController::class)->except(['index', 'show'])->middleware('role:' . RolesEnum::Admin->value);
 
         Route::get('/events', [EventController::class, 'index'])->name('event.index');
         Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show');

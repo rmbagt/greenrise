@@ -31,7 +31,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Event/Create');
     }
 
     /**
@@ -39,7 +39,16 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'date' => ['required', 'date'],
+            'image' => ['required', 'string'],
+        ]);
+        $data['donationTotal'] = 0;
+        Event::create($data);
+
+        return to_route('event.index')->with('success', 'Event created successfully.');
     }
 
     /**
@@ -64,7 +73,9 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        return Inertia::render('Event/Edit', [
+            'event' => new EventResource($event),
+        ]);
     }
 
     /**
@@ -72,7 +83,15 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        //
+        $data = $request->validate([
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'date' => ['required', 'date'],
+            'image' => ['required', 'string'],
+        ]);
+        $event->update($data);
+
+        return to_route('event.index')->with('success', 'Event updated successfully.');
     }
 
     /**
@@ -80,6 +99,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return to_route('event.index')->with('success', 'Event deleted successfully.');
     }
 }
