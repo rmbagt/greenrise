@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -40,13 +41,19 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => ['required', 'string'],
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'date' => ['required', 'date'],
-            'image' => ['required', 'string'],
+            'image' => ['required', 'image', 'max:2048'], // 2MB Max
         ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('event', 'public');
+            $data['image'] = Storage::url($path);
+        }
+
         $data['donationTotal'] = 0;
-        Event::create($data);
+        $event = Event::create($data);
 
         return to_route('event.index')->with('success', 'Event created successfully.');
     }

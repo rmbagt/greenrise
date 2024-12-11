@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import {
@@ -12,7 +12,7 @@ import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { Label } from "@/Components/ui/label";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/Components/ui/calendar";
@@ -24,17 +24,46 @@ import {
 
 export default function Create() {
   const [date, setDate] = useState<Date>();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, processing, errors, progress } = useForm({
     title: "",
     description: "",
     date: "",
-    image: "",
+    image: null as File | null,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route("event.store"));
+    post(route("event.store"), {
+      forceFormData: true,
+    });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setData("image", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      setData("image", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -114,14 +143,52 @@ export default function Create() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="image">Image URL</Label>
-                  <Input
-                    id="image"
-                    type="url"
-                    value={data.image}
-                    onChange={(e) => setData("image", e.target.value)}
-                    required
-                  />
+                  <Label htmlFor="image">Event Image</Label>
+                  <div
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer"
+                    onDrop={handleDrop}
+                    onDragOver={(e) => e.preventDefault()}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {previewUrl ? (
+                      <div className="relative">
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className="mx-auto max-h-48 rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="absolute bottom-2 left-1/2 transform -translate-x-1/2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPreviewUrl(null);
+                            setData("image", null);
+                            if (fileInputRef.current)
+                              fileInputRef.current.value = "";
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-gray-500">
+                        <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                        <p>
+                          Drag and drop an image here, or click to select a file
+                        </p>
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </div>
                   {errors.image && (
                     <p className="text-sm text-red-500">{errors.image}</p>
                   )}
@@ -133,7 +200,7 @@ export default function Create() {
                   className="w-full bg-green-600 hover:bg-green-700 text-white"
                   disabled={processing}
                 >
-                  Create Event
+                  {processing ? "Creating..." : "Create Event"}
                 </Button>
               </CardFooter>
             </form>

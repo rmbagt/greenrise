@@ -1,9 +1,11 @@
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import { Toaster } from "@/Components/ui/sonner";
 import { hasRole } from "@/helpers";
 import { Link, usePage } from "@inertiajs/react";
-import { PropsWithChildren, ReactNode, useState } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Authenticated({
   header,
@@ -14,6 +16,12 @@ export default function Authenticated({
 
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
+
+  useEffect(() => {
+    if (success) {
+      toast.success(success);
+    }
+  }, [success]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -234,6 +242,7 @@ export default function Authenticated({
       )}
 
       <main className="p-4">{children}</main>
+      <Toaster position="top-center" duration={1000} />
     </div>
   );
 }
