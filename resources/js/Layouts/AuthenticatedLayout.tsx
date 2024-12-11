@@ -58,7 +58,7 @@ export default function Authenticated({
                 </NavLink>
                 <NavLink
                   href={route("event.index")}
-                  active={route().current("event.index")}
+                  active={route().current("event.*")}
                 >
                   Events
                 </NavLink>
@@ -161,7 +161,7 @@ export default function Authenticated({
             </ResponsiveNavLink>
             <ResponsiveNavLink
               href={route("event.index")}
-              active={route().current("event.index")}
+              active={route().current("event.*")}
             >
               Events
             </ResponsiveNavLink>

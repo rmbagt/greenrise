@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DonationResource;
 use App\Http\Resources\EventResource;
+use App\Models\Donation;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,9 +45,18 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+    public function show($id)
     {
-        //
+        $event = Event::with('donations')->findOrFail($id);
+        $donators = Donation::with('user')
+            ->where('event_id', $id)
+            ->orderBy('amount', 'desc')
+            ->get();
+
+        return Inertia::render('Event/Show', [
+            'event' => new EventResource($event),
+            'donators' => DonationResource::collection($donators),
+        ]);
     }
 
     /**
