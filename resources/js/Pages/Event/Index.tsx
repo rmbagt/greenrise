@@ -122,18 +122,8 @@ export default function Index({
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="min-h-[80px]">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {event.description.length > 100
-                        ? `${event.description.slice(0, 100)}... `
-                        : event.description}
-                      {event.description.length > 100 && (
-                        <Link
-                          href={route("event.show", event.id)}
-                          className="text-green-600 hover:underline dark:text-green-400"
-                        >
-                          Read More
-                        </Link>
-                      )}
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                      {event.description}
                     </p>
                   </div>
                   <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
@@ -200,7 +190,7 @@ export default function Index({
                 {userParticipatedEvents.map((event) => (
                   <Card
                     key={event.id}
-                    className="overflow-hidden transition-shadow hover:shadow-md"
+                    className="overflow-hidden transition-shadow hover:shadow-md flex flex-col h-[400px]"
                   >
                     <CardHeader className="p-4">
                       <div className="flex items-center space-x-4">
@@ -219,8 +209,8 @@ export default function Index({
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                      <div className="overflow-x-auto">
+                    <CardContent className="px-4 pb-4 flex-1">
+                      <div className="h-[180px] overflow-y-auto">
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b text-left">
@@ -262,7 +252,7 @@ export default function Index({
                         </table>
                       </div>
                     </CardContent>
-                    <CardFooter className="bg-gray-50 p-4 dark:bg-gray-800">
+                    <CardFooter className="bg-gray-50 p-4 dark:bg-gray-800 mt-auto">
                       <div className="flex justify-between w-full text-sm">
                         <span className="font-medium">Total Donations:</span>
                         <span className="font-bold text-green-600 dark:text-green-400">
