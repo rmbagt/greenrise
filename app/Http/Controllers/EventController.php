@@ -55,7 +55,7 @@ class EventController extends Controller
         $data['donationTotal'] = 0;
         $event = Event::create($data);
 
-        return to_route('event.index')->with('success', 'Event created successfully.');
+        return to_route('admin.index')->with('success', 'Event created successfully.');
     }
 
     /**
@@ -119,6 +119,6 @@ class EventController extends Controller
     {
         $event->delete();
 
-        return to_route('event.index')->with('success', 'Event deleted successfully.');
+        return to_route('admin.index')->with('success', 'Event deleted successfully.');
     }
 }

@@ -21,15 +21,28 @@ import {
   Trash,
   Plus,
 } from "lucide-react";
+import { useForm } from "@inertiajs/react";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/Components/ui/dialog";
 
 const ITEMS_PER_PAGE = 6;
 
-export default function Index({
+export default function AdminIndex({
   events,
   auth,
 }: PageProps<{ events: PaginatedData<Event> }>) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
+
+  const form = useForm();
 
   const filteredEvents = useMemo(() => {
     return events.data.filter((event) =>
@@ -42,6 +55,28 @@ export default function Index({
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const openDeleteModal = (event: Event) => {
+    setEventToDelete(event);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setEventToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const deleteEvent = () => {
+    if (eventToDelete) {
+      form.delete(route("event.destroy", eventToDelete.id), {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+          closeDeleteModal();
+        },
+      });
+    }
+  };
 
   return (
     <AuthenticatedLayout>
@@ -97,8 +132,10 @@ export default function Index({
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="min-h-[80px]">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-                      {event.description}
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {event.description.length > 100
+                        ? `${event.description.slice(0, 100)}... `
+                        : event.description}
                     </p>
                   </div>
                   <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
@@ -119,15 +156,13 @@ export default function Index({
                       Edit
                     </Link>
                   </Button>
-                  <Button asChild variant="destructive" className="flex-1">
-                    <Link
-                      href={route("event.destroy", event.id)}
-                      method="delete"
-                      as="button"
-                    >
-                      <Trash className="mr-2 h-4 w-4" />
-                      Delete
-                    </Link>
+                  <Button
+                    variant="destructive"
+                    className="flex-1"
+                    onClick={() => openDeleteModal(event)}
+                  >
+                    <Trash className="mr-2 h-4 w-4" />
+                    Delete
                   </Button>
                 </CardFooter>
               </Card>
@@ -165,6 +200,31 @@ export default function Index({
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the event "{eventToDelete?.title}
+              "? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={closeDeleteModal}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={deleteEvent}
+              disabled={form.processing}
+            >
+              {form.processing ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AuthenticatedLayout>
   );
 }
