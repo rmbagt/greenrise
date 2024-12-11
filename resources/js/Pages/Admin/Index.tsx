@@ -20,6 +20,7 @@ import {
   Edit,
   Trash,
   Plus,
+  Earth,
 } from "lucide-react";
 import { useForm } from "@inertiajs/react";
 import {
@@ -168,6 +169,15 @@ export default function AdminIndex({
               </Card>
             ))}
           </div>
+
+          {paginatedEvents.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-4 gap-2">
+              <Earth size={48} />
+              <p className="md:text-lg text-gray-500 dark:text-gray-400 text-center">
+                No events found. Please try a different search.
+              </p>
+            </div>
+          )}
 
           {totalPages > 1 && (
             <div className="mt-6 flex justify-center items-center gap-2">
