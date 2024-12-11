@@ -80,14 +80,14 @@ export default function Edit({ event }: { event: Event }) {
     <AuthenticatedLayout>
       <Head title="Edit Event" />
 
-      <div className="py-4">
+      <div className="py-4 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl sm:px-6 lg:px-8">
           <button
             onClick={() => window.history.back()}
             className="mb-4 flex items-center w-fit"
           >
             <ChevronLeft className="h-4 w-4" />
-            Back
+            <span className="ml-1">Back</span>
           </button>
           <Card className="overflow-hidden bg-white shadow-sm dark:bg-gray-800">
             <CardHeader>
