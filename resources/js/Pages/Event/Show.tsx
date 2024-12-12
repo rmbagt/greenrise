@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, useForm } from "@inertiajs/react";
 import { Donation, Event } from "@/types";
 import { ChevronLeft } from "lucide-react";
 import {
@@ -14,6 +14,9 @@ import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import * as Avatar from "@radix-ui/react-avatar";
 import { PageProps as InertiaPageProps } from "@inertiajs/core";
+import { toast } from "sonner";
+import { Calendar } from "@/Components/ui/calendar";
+import { format } from "date-fns";
 
 interface PageProps extends InertiaPageProps {
   event: Event;
@@ -27,10 +30,40 @@ export default function Show() {
     ? props.donators
     : props.donators.data || [];
 
-  const [amount, setAmount] = useState<number | string>("");
+  const { data, setData, post, processing, errors, reset } = useForm({
+    amount: "",
+    event_id: event.id,
+    date: undefined as Date | undefined,
+  });
 
   const handlePresetAmount = (presetAmount: number) => {
-    setAmount(presetAmount);
+    setData("amount", presetAmount.toString());
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formattedData = {
+      ...data,
+      date: data.date ? format(data.date, "yyyy-MM-dd") : undefined,
+    };
+    post(route("donation.store"), {
+      data: formattedData,
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        toast.success("Donation submitted successfully!");
+        reset("amount", "date");
+      },
+      onError: (errors) => {
+        if (errors.amount) {
+          toast.error(errors.amount);
+        } else if (errors.date) {
+          toast.error(errors.date);
+        } else {
+          toast.error("An error occurred while submitting your donation.");
+        }
+      },
+    });
   };
 
   return (
@@ -91,7 +124,7 @@ export default function Show() {
                               {donator.user.name}
                             </p>
                           </div>
-                          <div className="font-medium">${donator.amount}</div>
+                          <div className="font-medium">Rp {donator.amount}</div>
                         </div>
                       ))}
                     </div>
@@ -127,31 +160,62 @@ export default function Show() {
                   <CardTitle className="text-center text-xl sm:text-2xl mb-4">
                     Donate Here
                   </CardTitle>
-                  <div className="grid grid-cols-3 gap-2 py-4">
-                    {[1, 5, 10, 20, 50, 100].map((preset) => (
-                      <Button
-                        key={preset}
-                        className="bg-green-500 hover:bg-green-600 text-sm sm:text-base"
-                        onClick={() => handlePresetAmount(preset)}
+                  <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-3 gap-2 py-4">
+                      {[5000, 10000, 20000, 50000, 100000, 500000].map(
+                        (preset) => (
+                          <Button
+                            key={preset}
+                            type="button"
+                            className="bg-green-500 hover:bg-green-600 text-sm sm:text-base"
+                            onClick={() => handlePresetAmount(preset)}
+                          >
+                            Rp {preset}
+                          </Button>
+                        )
+                      )}
+                    </div>
+                    <Input
+                      id="amount"
+                      name="amount"
+                      type="number"
+                      placeholder="Custom amount.."
+                      value={data.amount}
+                      onChange={(e) => setData("amount", e.target.value)}
+                      className="w-full mt-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    {errors.amount && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.amount}
+                      </p>
+                    )}
+                    <div className="mt-4">
+                      <label
+                        htmlFor="date"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                       >
-                        ${preset}
-                      </Button>
-                    ))}
-                  </div>
-                  <Input
-                    id="input"
-                    type="number"
-                    placeholder="Custom amount.."
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full mt-4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <Button
-                    type="submit"
-                    className="w-full mt-4 py-2 text-base sm:text-lg"
-                  >
-                    Submit Donation
-                  </Button>
+                        Donation Date
+                      </label>
+                      <div className="flex justify-center">
+                        <Calendar
+                          mode="single"
+                          selected={data.date}
+                          onSelect={(newDate) => setData("date", newDate)}
+                          className="rounded-md border"
+                        />
+                      </div>
+                    </div>
+                    {errors.date && (
+                      <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                    )}
+                    <Button
+                      type="submit"
+                      className="w-full mt-4 py-2 text-base sm:text-lg"
+                      disabled={processing}
+                    >
+                      {processing ? "Processing..." : "Submit Donation"}
+                    </Button>
+                  </form>
                 </CardHeader>
               </Card>
             </div>

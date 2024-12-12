@@ -3,6 +3,7 @@
 use App\Enum\RolesEnum;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProfileController;
@@ -26,6 +27,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/events', [EventController::class, 'index'])->name('event.index');
         Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show');
+
+        Route::post('/donation', [DonationController::class, 'store'])->name('donation.store');
 
     });
 });
