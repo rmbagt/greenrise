@@ -1,28 +1,28 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
 import { Link } from "@inertiajs/react";
 import { PropsWithChildren } from "react";
 
 export default function Guest({ children }: PropsWithChildren) {
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 lg:px-8 dark:bg-gray-900">
       <Link
         href="/"
-        className="flex items-center space-x-3 hover:text-green-300"
+        className="flex items-center space-x-4 mb-8 hover:text-green-300"
       >
-        <span className="text-2xl font-semibold tracking-wide text-black transition duration-300">
+        <span className="text-3xl sm:text-4xl font-semibold tracking-wide text-black transition duration-300 dark:text-white">
           GreenRise
         </span>
-        <div className="relative w-6 h-6 transition duration-300 text-green-400 hover:text-green-300">
+        <div className="relative w-8 h-8 sm:w-10 sm:h-10 transition duration-300 text-green-400 hover:text-green-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="40"
+            height="40"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className="w-8 h-8 sm:w-10 sm:h-10"
           >
             <path d="M7 20h10" />
             <path d="M10 20c5.5-2.5.8-6.4 3-10" />
@@ -31,8 +31,7 @@ export default function Guest({ children }: PropsWithChildren) {
           </svg>
         </div>
       </Link>
-
-      <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800">
+      <div className="w-full max-w-md overflow-hidden bg-white p-4 md:p-8 shadow-md rounded-lg dark:bg-gray-800">
         {children}
       </div>
     </div>
