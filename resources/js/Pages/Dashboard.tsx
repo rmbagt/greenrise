@@ -169,7 +169,7 @@ export default function Dashboard({
                         </p>
                       </div>
                       <div className="font-medium">
-                        ${Number(donator.amount).toFixed(2)}
+                        Rp {Number(donator.amount).toFixed(2)}
                       </div>
                     </div>
                   ))}
