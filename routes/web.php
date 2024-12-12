@@ -2,6 +2,7 @@
 
 use App\Enum\RolesEnum;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -21,12 +22,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::middleware(['verified'])->group(function(){
-        Route::get('/dashboard', function () {
-            return Inertia::render('Dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
         Route::resource('admin', AdminController::class)->middleware('role:' . RolesEnum::Admin->value);
-        
+
         Route::resource('event', EventController::class)->except(['index', 'show'])->middleware('role:' . RolesEnum::Admin->value);
 
         Route::get('/events', [EventController::class, 'index'])->name('event.index');
