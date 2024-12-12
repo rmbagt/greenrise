@@ -254,7 +254,7 @@ export default function Landing({
             className="border-white hover:bg-white hover:text-green-600"
             asChild
           >
-            <Link href={handleAuthenticatedAction("/events")}>Load More</Link>
+            <Link href={route("event.index")}>Load More</Link>
           </Button>
         </div>
       </section>
