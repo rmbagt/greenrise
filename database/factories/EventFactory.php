@@ -19,7 +19,7 @@ class EventFactory extends Factory
         return [
             'title' => fake()->text(20),
             'description' => fake()->text(2000),
-            'date' => fake()->dateTime()->format('Y-m-d H:i:s'),
+            'date' => now()->format('Y-m-d H:i:s'),
             'image' => fake()->imageUrl(),
             'donationTotal' => fake()->numberBetween(100000, 1000000),
 

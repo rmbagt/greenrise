@@ -1,5 +1,5 @@
 import LandingLayout from "@/Layouts/LandingLayout";
-import { PageProps, User } from "@/types";
+import { PageProps, Event } from "@/types";
 import {
   Carousel,
   CarouselContent,
@@ -26,110 +26,115 @@ import {
   LocateIcon as Location,
 } from "lucide-react";
 import { Textarea } from "@/Components/ui/textarea";
-import { useRef } from "react";
+import { useRef, useState, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
+import { Link } from "@inertiajs/react";
 
-const carouselData = [
-  {
-    imageUrl: "/assets/event1.png",
-    title: "Community Beach Cleanup",
-    description:
-      "Join us in cleaning up the beach and making our environment better.",
-    detailUrl: "#",
-  },
-  {
-    imageUrl: "/assets/event2.png",
-    title: "Charity Run for Education",
-    description:
-      "Participate in our charity run to raise funds for underprivileged children's education.",
-    detailUrl: "#",
-  },
-  {
-    imageUrl: "/assets/event3.png",
-    title: "Food Drive for the Homeless",
-    description:
-      "Help us collect and distribute food to the homeless in our community.",
-    detailUrl: "#",
-  },
-];
+interface LandingProps extends PageProps {
+  featuredEvents?: Event[];
+  upcomingEvents?: Event[];
+}
 
-const events = [
-  {
-    imageUrl: "/assets/event4.png",
-    title: "Local Park Tree Planting",
-    description:
-      "Join us in planting trees at the local park to promote a greener environment.",
-    date: { month: "APR", day: "14" },
-  },
-  {
-    imageUrl: "/assets/event2.png",
-    title: "Fundraiser for Animal Shelter",
-    description: "Support our fundraiser to help the local animal shelter.",
-    date: { month: "AUG", day: "20" },
-  },
-  {
-    imageUrl: "/assets/event1.png",
-    title: "Blood Donation Camp",
-    description:
-      "Donate blood and save lives at our community blood donation camp.",
-    date: { month: "SEP", day: "18" },
-  },
-];
-
-export default function Landing({ auth }: PageProps) {
+export default function Landing({
+  auth,
+  featuredEvents = [],
+  upcomingEvents = [],
+}: LandingProps) {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dayFilter, setDayFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
+  const handleAuthenticatedAction = (action: string) => {
+    if (!auth.user) {
+      return route("login");
+    }
+    return action;
+  };
+
+  const filteredEvents = useMemo(() => {
+    return upcomingEvents.filter((event) => {
+      const matchesSearch =
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesDay =
+        dayFilter === "all" ||
+        (dayFilter === "weekdays" &&
+          [1, 2, 3, 4, 5].includes(new Date(event.date).getDay())) ||
+        (dayFilter === "weekend" &&
+          [0, 6].includes(new Date(event.date).getDay()));
+      const matchesCategory = categoryFilter === "all";
+      // || event.category === categoryFilter;
+
+      return matchesSearch && matchesDay && matchesCategory;
+    });
+  }, [upcomingEvents, searchTerm, dayFilter, categoryFilter]);
 
   return (
     <LandingLayout auth={auth}>
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12" id="home">
-        <Carousel
-          plugins={[plugin.current]}
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full"
-          // onMouseEnter={plugin.current.stop}
-          // onMouseLeave={plugin.current.reset}
-        >
-          <CarouselContent>
-            {carouselData.map((item, index) => (
-              <CarouselItem key={index}>
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="rounded-lg w-full object-cover"
-                  />
-                  <div className="space-y-6">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-                      {item.title}
-                    </h1>
-                    <p className="text-lg text-white/90">{item.description}</p>
-                    <div className="flex gap-4">
-                      <Button
-                        size="lg"
-                        className="bg-pink-600 hover:bg-pink-700"
-                      >
-                        Donate Now
-                      </Button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className=" border-white hover:bg-white hover:text-green-600"
-                      >
-                        Learn More
-                      </Button>
+        {featuredEvents.length > 0 ? (
+          <Carousel
+            plugins={[plugin.current]}
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {featuredEvents.map((event, index) => (
+                <CarouselItem key={index}>
+                  <div className="grid md:grid-cols-2 gap-8 items-center">
+                    <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="space-y-6">
+                      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+                        {event.title}
+                      </h1>
+                      <p className="text-lg text-white/90 line-clamp-3">
+                        {event.description}
+                      </p>
+                      <div className="flex gap-4">
+                        <Button
+                          size="lg"
+                          className="bg-pink-600 hover:bg-pink-700"
+                          asChild
+                        >
+                          <Link href={route("event.index")}>Donate Now</Link>
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="border-white hover:bg-white hover:text-green-600"
+                          asChild
+                        >
+                          <Link href={route("event.show", { id: event.id })}>
+                            Learn More
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
-        </Carousel>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
+        ) : (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-white">
+              No featured events at the moment
+            </h2>
+          </div>
+        )}
       </section>
 
       {/* Search Section */}
@@ -141,6 +146,8 @@ export default function Landing({ auth }: PageProps) {
               <Input
                 placeholder="Search Event"
                 className="pl-10 bg-white/20 border-0 text-white placeholder:text-white/60"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="relative">
@@ -175,16 +182,17 @@ export default function Landing({ auth }: PageProps) {
             Upcoming Events
           </h2>
           <div className="flex gap-4">
-            <Select defaultValue="weekdays">
+            <Select value={dayFilter} onValueChange={setDayFilter}>
               <SelectTrigger className="bg-white/20 border-0 text-white w-[150px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="all">All Days</SelectItem>
                 <SelectItem value="weekdays">Weekdays</SelectItem>
                 <SelectItem value="weekend">Weekend</SelectItem>
               </SelectContent>
             </Select>
-            <Select defaultValue="all">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="bg-white/20 border-0 text-white w-[150px]">
                 <SelectValue />
               </SelectTrigger>
@@ -198,44 +206,55 @@ export default function Landing({ auth }: PageProps) {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden group hover:shadow-xl transition-all"
-            >
-              <div className="relative aspect-video">
-                <img
-                  src={event.imageUrl}
-                  alt={event.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 left-4 bg-white/90 rounded-lg p-2 text-center min-w-[60px]">
-                  <div className="text-sm font-semibold text-green-600">
-                    {event.date.month}
-                  </div>
-                  <div className="text-2xl font-bold text-green-900">
-                    {event.date.day}
+        {filteredEvents.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredEvents.map((event, index) => (
+              <div
+                key={index}
+                className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden group hover:shadow-xl transition-all"
+              >
+                <div className="relative aspect-video">
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 left-4 bg-white/90 rounded-lg p-2 text-center min-w-[60px]">
+                    <div className="text-sm font-semibold text-green-600">
+                      {new Date(event.date)
+                        .toLocaleString("default", { month: "short" })
+                        .toUpperCase()}
+                    </div>
+                    <div className="text-2xl font-bold text-green-900">
+                      {new Date(event.date).getDate()}
+                    </div>
                   </div>
                 </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {event.title}
+                  </h3>
+                  <p className="text-white/80">{event.description}</p>
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  {event.title}
-                </h3>
-                <p className="text-white/80">{event.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-bold text-white">
+              No events match your search criteria
+            </h3>
+          </div>
+        )}
 
         <div className="flex justify-center mt-12">
           <Button
             variant="outline"
             size="lg"
             className="border-white hover:bg-white hover:text-green-600"
+            asChild
           >
-            Load More
+            <Link href={handleAuthenticatedAction("/events")}>Load More</Link>
           </Button>
         </div>
       </section>
@@ -255,17 +274,21 @@ export default function Landing({ auth }: PageProps) {
                 environment.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Heart className="mr-2 h-4 w-4" /> Donate $10
-                </Button>
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Heart className="mr-2 h-4 w-4" /> Donate $25
-                </Button>
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Heart className="mr-2 h-4 w-4" /> Donate $50
-                </Button>
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Heart className="mr-2 h-4 w-4" /> Custom Amount
+                {[10000, 25000, 50000].map((amount) => (
+                  <Button
+                    key={amount}
+                    className="bg-green-600 hover:bg-green-700"
+                    asChild
+                  >
+                    <Link href={route("event.index")}>
+                      <Heart className="mr-2 h-4 w-4" /> Donate Rp {amount}
+                    </Link>
+                  </Button>
+                ))}
+                <Button className="bg-green-600 hover:bg-green-700" asChild>
+                  <Link href={route("event.index")}>
+                    <Heart className="mr-2 h-4 w-4" /> Custom Amount
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -301,11 +324,11 @@ export default function Landing({ auth }: PageProps) {
               </div>
               <div className="flex items-center space-x-4 text-gray-700">
                 <Phone className="h-5 w-5 text-green-600" />
-                <span>+1 (555) 123-4567</span>
+                <span>+62 22 82716203</span>
               </div>
               <div className="flex items-center space-x-4 text-gray-700">
                 <Location className="h-5 w-5 text-green-600" />
-                <span>123 Green Street, Eco City, EC 12345</span>
+                <span>Kebon Jeruk, West Jakarta, Indonesia</span>
               </div>
             </div>
             <form className="space-y-4">

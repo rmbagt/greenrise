@@ -25,6 +25,7 @@ export type Event = {
   donationTotal: number;
   donations: Donation[];
   created_at: string;
+  updated_at: string;
 };
 
 export type Donation = {
