@@ -273,7 +273,7 @@ export default function Landing({
                 small, makes a significant impact on our community and
                 environment.
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                 {[10000, 25000, 50000].map((amount) => (
                   <Button
                     key={amount}
@@ -285,11 +285,6 @@ export default function Landing({
                     </Link>
                   </Button>
                 ))}
-                <Button className="bg-green-600 hover:bg-green-700" asChild>
-                  <Link href={route("event.index")}>
-                    <Heart className="mr-2 h-4 w-4" /> Custom Amount
-                  </Link>
-                </Button>
               </div>
             </div>
             <div className="bg-green-100 p-6 rounded-lg">

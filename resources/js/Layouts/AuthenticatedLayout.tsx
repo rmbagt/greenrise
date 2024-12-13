@@ -60,12 +60,14 @@ export default function Authenticated({
 
               <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <NavLink
+                  prefetch
                   href={route("dashboard")}
                   active={route().current("dashboard")}
                 >
                   Dashboard
                 </NavLink>
                 <NavLink
+                  prefetch
                   href={route("event.index")}
                   active={route().current("event.*")}
                 >
@@ -73,6 +75,7 @@ export default function Authenticated({
                 </NavLink>
                 {hasRole(user, "admin") && (
                   <NavLink
+                    prefetch
                     href={route("admin.index")}
                     active={route().current("admin.index")}
                   >
@@ -115,7 +118,7 @@ export default function Authenticated({
                   </Dropdown.Trigger>
 
                   <Dropdown.Content>
-                    <Dropdown.Link href={route("profile.edit")}>
+                    <Dropdown.Link prefetch href={route("profile.edit")}>
                       Profile
                     </Dropdown.Link>
                     <Dropdown.Link
@@ -177,12 +180,14 @@ export default function Authenticated({
         >
           <div className="space-y-1 pb-3 pt-2">
             <ResponsiveNavLink
+              prefetch
               href={route("dashboard")}
               active={route().current("dashboard")}
             >
               Dashboard
             </ResponsiveNavLink>
             <ResponsiveNavLink
+              prefetch
               href={route("event.index")}
               active={route().current("event.*")}
             >
@@ -190,6 +195,7 @@ export default function Authenticated({
             </ResponsiveNavLink>
             {hasRole(user, "admin") && (
               <ResponsiveNavLink
+                prefetch
                 href={route("admin.index")}
                 active={route().current("admin.index")}
               >
@@ -218,7 +224,7 @@ export default function Authenticated({
             </div>
 
             <div className="mt-3 space-y-1">
-              <ResponsiveNavLink href={route("profile.edit")}>
+              <ResponsiveNavLink prefetch href={route("profile.edit")}>
                 Profile
               </ResponsiveNavLink>
               <ResponsiveNavLink
