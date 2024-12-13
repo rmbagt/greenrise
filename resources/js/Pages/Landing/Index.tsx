@@ -98,7 +98,7 @@ export default function Landing({
                       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
                         {event.title}
                       </h1>
-                      <p className="text-lg text-white/90 line-clamp-3">
+                      <p className="text-lg text-white/90 line-clamp-3 text-justify">
                         {event.description}
                       </p>
                       <div className="flex gap-4">
@@ -234,7 +234,9 @@ export default function Landing({
                   <h3 className="text-lg font-semibold text-white mb-2">
                     {event.title}
                   </h3>
-                  <p className="text-white/80">{event.description}</p>
+                  <p className="text-white/80 line-clamp-3 text-justify">
+                    {event.description}
+                  </p>
                 </div>
               </div>
             ))}

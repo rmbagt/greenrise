@@ -81,7 +81,7 @@ export default function Dashboard({
     },
     {
       title: "Your Donations",
-      value: `Rp ${Number(stats.totalDonations).toFixed(2)}`,
+      value: `Rp ${Number(stats.totalDonations).toLocaleString()}`,
       icon: <Trophy className="h-4 w-4 text-amber-600" />,
       description: `${(
         (Number(stats.lastMonthDonations) / Number(stats.totalDonations)) *
@@ -140,7 +140,7 @@ export default function Dashboard({
             </Card>
 
             {/* Top Donators */}
-            <Card>
+            <Card className="md:col-span-2 lg:col-span-1">
               <CardHeader>
                 <CardTitle>Top Donators</CardTitle>
                 <CardDescription>
@@ -169,7 +169,7 @@ export default function Dashboard({
                         </p>
                       </div>
                       <div className="font-medium">
-                        Rp {Number(donator.amount).toFixed(2)}
+                        Rp {Number(donator.amount).toLocaleString()}
                       </div>
                     </div>
                   ))}

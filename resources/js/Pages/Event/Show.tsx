@@ -89,8 +89,12 @@ export default function Show() {
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[3rem] font-semibold text-green-800 dark:text-green-200">
               {event.title}
             </h1>
-            <p className="text-base sm:text-lg md:text-xl mt-4">
-              {event.description}
+            <p className="text-base sm:text-lg md:text-xl mt-4 space-y-4">
+              {event?.description.split("\n").map((paragraph, index) => (
+                <p key={index} className="text-justify">
+                  {paragraph}
+                </p>
+              ))}
             </p>
 
             <div className="flex flex-col lg:flex-row mt-10 gap-6 lg:gap-10">
@@ -124,7 +128,9 @@ export default function Show() {
                               {donator.user.name}
                             </p>
                           </div>
-                          <div className="font-medium">Rp {donator.amount}</div>
+                          <div className="font-medium">
+                            Rp {donator.amount.toLocaleString()}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -170,7 +176,7 @@ export default function Show() {
                             className="bg-green-500 hover:bg-green-600 text-sm sm:text-base"
                             onClick={() => handlePresetAmount(preset)}
                           >
-                            Rp {preset}
+                            Rp {preset.toLocaleString()}
                           </Button>
                         )
                       )}

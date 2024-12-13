@@ -133,10 +133,8 @@ export default function AdminIndex({
                 </CardHeader>
                 <CardContent className="flex-1">
                   <div className="min-h-[80px]">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {event.description.length > 100
-                        ? `${event.description.slice(0, 100)}... `
-                        : event.description}
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 text-justify">
+                      {event.description}
                     </p>
                   </div>
                   <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
