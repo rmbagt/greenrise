@@ -15,9 +15,7 @@ cmds = [
 [start]
 cmd = [
     '/assets/start.sh',
-    "/bin/sh", 
-    "-c", 
-    "sleep 60 && php artisan migrate:fresh --seed && php artisan serve && npm run dev"
+    "php artisan serve && npm run dev"
 ]
 
 [staticAssets]
