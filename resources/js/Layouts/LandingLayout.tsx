@@ -4,6 +4,7 @@ import { PropsWithChildren, ReactNode, useState, useEffect } from "react";
 import { User } from "@/types";
 import { Facebook, Instagram, Linkedin, Twitter, Menu, X } from "lucide-react";
 import { Input } from "@/Components/ui/input";
+import { motion } from "motion/react";
 
 export default function LandingLayout({
   header,
@@ -149,87 +150,95 @@ export default function LandingLayout({
         <main className="pt-16">{children}</main>
 
         {/* Footer */}
-        <footer className="bg-black text-white py-12">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div>
-                <h3 className="text-lg font-semibold mb-4">About GreenRise</h3>
-                <p className="text-sm text-gray-400">
-                  GreenRise is dedicated to creating a sustainable future
-                  through community engagement and environmental initiatives.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-                <ul className="space-y-2">
-                  {navItems.map(([title, href]) => (
-                    <li key={href}>
-                      <a
-                        href={href}
-                        className="text-sm text-gray-400 hover:text-white transition-colors"
-                      >
-                        {title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-                <div className="flex space-x-4">
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Facebook className="h-6 w-6" />
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Twitter className="h-6 w-6" />
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Instagram className="h-6 w-6" />
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Linkedin className="h-6 w-6" />
-                  </a>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", duration: 3 }}
+        >
+          <footer className="bg-black text-white py-12">
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">
+                    About GreenRise
+                  </h3>
+                  <p className="text-sm text-gray-400">
+                    GreenRise is dedicated to creating a sustainable future
+                    through community engagement and environmental initiatives.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+                  <ul className="space-y-2">
+                    {navItems.map(([title, href]) => (
+                      <li key={href}>
+                        <a
+                          href={href}
+                          className="text-sm text-gray-400 hover:text-white transition-colors"
+                        >
+                          {title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+                  <div className="flex space-x-4">
+                    <a
+                      href="#"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Facebook className="h-6 w-6" />
+                    </a>
+                    <a
+                      href="#"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Twitter className="h-6 w-6" />
+                    </a>
+                    <a
+                      href="#"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Instagram className="h-6 w-6" />
+                    </a>
+                    <a
+                      href="#"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Linkedin className="h-6 w-6" />
+                    </a>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
+                  <p className="text-sm text-gray-400 mb-2">
+                    Stay updated with our latest news and events.
+                  </p>
+                  <form className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                    />
+                    <Button
+                      type="submit"
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Subscribe
+                    </Button>
+                  </form>
                 </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
-                <p className="text-sm text-gray-400 mb-2">
-                  Stay updated with our latest news and events.
+              <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p className="text-sm text-gray-400">
+                  © {new Date().getFullYear()} GreenRise. All rights reserved.
                 </p>
-                <form className="flex gap-2">
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
-                  />
-                  <Button
-                    type="submit"
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    Subscribe
-                  </Button>
-                </form>
               </div>
             </div>
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-              <p className="text-sm text-gray-400">
-                © {new Date().getFullYear()} GreenRise. All rights reserved.
-              </p>
-            </div>
-          </div>
-        </footer>
+          </footer>
+        </motion.div>
       </div>
     </>
   );
