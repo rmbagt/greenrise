@@ -7,11 +7,18 @@ cmds = [
     "cp /assets/worker-*.conf /etc/supervisor/conf.d/",
     "cp /assets/supervisord.conf /etc/supervisord.conf",
     "chmod +x /assets/start.sh",
+    "php artisan key:generate",
+    "php artisan storage:link",
     "..."
 ]
 
 [start]
-cmd = '/assets/start.sh'
+cmd = [
+    '/assets/start.sh',
+    "/bin/sh", 
+    "-c", 
+    "sleep 60 && php artisan migrate:fresh --seed && php artisan serve && npm run dev"
+]
 
 [staticAssets]
 "start.sh" = '''
