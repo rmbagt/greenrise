@@ -9,7 +9,6 @@ cmds = [
     "chmod +x /assets/start.sh",
     "php artisan key:generate",
     "php artisan storage:link",
-    "php artisan serve && npm run dev",
     "..."
 ]
 
