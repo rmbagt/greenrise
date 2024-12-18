@@ -29,6 +29,7 @@ import { Textarea } from "@/Components/ui/textarea";
 import { useRef, useState, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "@inertiajs/react";
+import { capitalCase } from "change-case";
 
 interface LandingProps extends PageProps {
   featuredEvents?: Event[];
@@ -42,7 +43,8 @@ export default function Landing({
 }: LandingProps) {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
   const [searchTerm, setSearchTerm] = useState("");
-  const [dayFilter, setDayFilter] = useState("all");
+  const [placeFilter, setPlaceFilter] = useState("");
+  const [timeFilter, setTimeFilter] = useState("any");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const handleAuthenticatedAction = (action: string) => {
@@ -57,18 +59,34 @@ export default function Landing({
       const matchesSearch =
         event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesDay =
-        dayFilter === "all" ||
-        (dayFilter === "weekdays" &&
-          [1, 2, 3, 4, 5].includes(new Date(event.date).getDay())) ||
-        (dayFilter === "weekend" &&
-          [0, 6].includes(new Date(event.date).getDay()));
-      const matchesCategory = categoryFilter === "all";
-      // || event.category === categoryFilter;
+      const matchesPlace =
+        placeFilter === "" ||
+        event.location.toLowerCase().includes(placeFilter.toLowerCase());
+      const matchesTime = (() => {
+        if (timeFilter === "any") return true;
+        const eventDate = new Date(event.date);
+        const today = new Date();
+        switch (timeFilter) {
+          case "today":
+            return eventDate.toDateString() === today.toDateString();
+          case "tomorrow":
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return eventDate.toDateString() === tomorrow.toDateString();
+          case "week":
+            const nextWeek = new Date(today);
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            return eventDate >= today && eventDate <= nextWeek;
+          default:
+            return true;
+        }
+      })();
+      const matchesCategory =
+        categoryFilter === "all" || event.category === categoryFilter;
 
-      return matchesSearch && matchesDay && matchesCategory;
+      return matchesSearch && matchesPlace && matchesTime && matchesCategory;
     });
-  }, [upcomingEvents, searchTerm, dayFilter, categoryFilter]);
+  }, [upcomingEvents, searchTerm, placeFilter, timeFilter, categoryFilter]);
 
   return (
     <LandingLayout auth={auth}>
@@ -140,7 +158,7 @@ export default function Landing({
       {/* Search Section */}
       <section className="container mx-auto px-4 -mt-6 relative z-10">
         <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-lg">
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200" />
               <Input
@@ -155,11 +173,13 @@ export default function Landing({
               <Input
                 placeholder="Place"
                 className="pl-10 bg-white/20 border-0 text-white placeholder:text-white/60"
+                value={placeFilter}
+                onChange={(e) => setPlaceFilter(e.target.value)}
               />
             </div>
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200" />
-              <Select>
+              <Select value={timeFilter} onValueChange={setTimeFilter}>
                 <SelectTrigger className="pl-10 bg-white/20 border-0 text-white">
                   <SelectValue placeholder="Time" />
                 </SelectTrigger>
@@ -168,6 +188,19 @@ export default function Landing({
                   <SelectItem value="today">Today</SelectItem>
                   <SelectItem value="tomorrow">Tomorrow</SelectItem>
                   <SelectItem value="week">This week</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="relative">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="bg-white/20 border-0 text-white">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="community">Community</SelectItem>
+                  <SelectItem value="charity">Charity</SelectItem>
+                  <SelectItem value="environment">Environment</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -181,29 +214,6 @@ export default function Landing({
           <h2 className="text-3xl font-bold text-white mb-4 md:mb-0">
             Upcoming Events
           </h2>
-          <div className="flex gap-4">
-            <Select value={dayFilter} onValueChange={setDayFilter}>
-              <SelectTrigger className="bg-white/20 border-0 text-white w-[150px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Days</SelectItem>
-                <SelectItem value="weekdays">Weekdays</SelectItem>
-                <SelectItem value="weekend">Weekend</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="bg-white/20 border-0 text-white w-[150px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Events</SelectItem>
-                <SelectItem value="community">Community</SelectItem>
-                <SelectItem value="charity">Charity</SelectItem>
-                <SelectItem value="environment">Environment</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         {filteredEvents.length > 0 ? (
@@ -237,6 +247,22 @@ export default function Landing({
                   <p className="text-white/80 line-clamp-3 text-justify">
                     {event.description}
                   </p>
+                  <div className="mt-4 flex items-center justify-between text-sm text-white/60">
+                    <span className="flex items-center">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {event.location}
+                    </span>
+                    <span className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-1" />
+                      {new Date(event.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center text-sm text-white/60">
+                    <span className="flex items-center">
+                      <Heart className="w-4 h-4 mr-1" />
+                      {capitalCase(event.category)}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -256,7 +282,7 @@ export default function Landing({
             className="border-white hover:bg-white hover:text-green-600"
             asChild
           >
-            <Link href={route("event.index")}>Load More</Link>
+            <Link href={route("event.index")}>View All Events</Link>
           </Button>
         </div>
       </section>

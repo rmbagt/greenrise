@@ -21,8 +21,10 @@ class EventFactory extends Factory
             'description' => fake()->text(2000),
             'date' => now()->format('Y-m-d H:i:s'),
             'image' => fake()->imageUrl(),
-            'donationTotal' => fake()->numberBetween(100000, 1000000),
-
+            'donationTotal' => fake()->numberBetween(10000, 100000),
+            'donationGoal' => fake()->numberBetween(100000, 1000000),
+            'location' => fake()->address(),
+            'category' => fake()->randomElement(['community', 'charity', 'environment']),
         ];
     }
 }

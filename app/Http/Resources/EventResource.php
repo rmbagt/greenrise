@@ -23,6 +23,9 @@ class EventResource extends JsonResource
             'date' => $this->date,
             'image' => $this->image,
             'donationTotal' => $this->donationTotal,
+            'donationGoal' => $this->donationGoal,
+            'location' => $this->location,
+            'category' => $this->category,
             'donations' => $this->donations->map(function ($donation) {
                 return [
                     'id' => $donation->id,

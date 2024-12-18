@@ -21,11 +21,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/Components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { Event } from "@/types";
 
 export default function Edit({ event }: { event: Event }) {
   const [date, setDate] = useState<Date | undefined>(new Date(event.date));
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // Changed to null initially
+  const [previewUrl, setPreviewUrl] = useState<string | null>(event.image);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data, setData, post, processing, errors, progress } = useForm<{
@@ -33,16 +40,21 @@ export default function Edit({ event }: { event: Event }) {
     description: string;
     date: string;
     image: File | null;
+    donationGoal: number;
+    location: string;
+    category: string;
     _method: string;
   }>({
     title: event.title,
     description: event.description,
     date: event.date,
     image: null,
+    donationGoal: event.donationGoal,
+    location: event.location,
+    category: event.category,
     _method: "PUT",
   });
 
-  // The rest of the code remains the same
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     post(route("event.update", event.id), {
@@ -156,6 +168,57 @@ export default function Edit({ event }: { event: Event }) {
                   </Popover>
                   {errors.date && (
                     <p className="text-sm text-red-500">{errors.date}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="donationGoal">Donation Goal</Label>
+                  <Input
+                    id="donationGoal"
+                    type="number"
+                    value={data.donationGoal}
+                    onChange={(e) =>
+                      setData("donationGoal", Number(e.target.value))
+                    }
+                    required
+                  />
+                  {errors.donationGoal && (
+                    <p className="text-sm text-red-500">
+                      {errors.donationGoal}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={data.location}
+                    onChange={(e) => setData("location", e.target.value)}
+                    required
+                  />
+                  {errors.location && (
+                    <p className="text-sm text-red-500">{errors.location}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={data.category}
+                    onValueChange={(value) => setData("category", value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="community">Community</SelectItem>
+                      <SelectItem value="charity">Charity</SelectItem>
+                      <SelectItem value="environment">Environment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.category && (
+                    <p className="text-sm text-red-500">{errors.category}</p>
                   )}
                 </div>
 

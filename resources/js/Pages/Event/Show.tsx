@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage, useForm } from "@inertiajs/react";
 import { Donation, Event } from "@/types";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, MapPin, Calendar, Tag } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import { Button } from "@/Components/ui/button";
 import * as Avatar from "@radix-ui/react-avatar";
 import { PageProps as InertiaPageProps } from "@inertiajs/core";
 import { toast } from "sonner";
-import { Calendar } from "@/Components/ui/calendar";
+import { Calendar as CalendarComponent } from "@/Components/ui/calendar";
 import { format } from "date-fns";
 
 interface PageProps extends InertiaPageProps {
@@ -89,6 +89,20 @@ export default function Show() {
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[3rem] font-semibold text-green-800 dark:text-green-200">
               {event.title}
             </h1>
+            <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 mr-2" />
+                {format(new Date(event.date), "MMMM d, yyyy")}
+              </div>
+              <div className="flex items-center">
+                <MapPin className="w-4 h-4 mr-2" />
+                {event.location}
+              </div>
+              <div className="flex items-center">
+                <Tag className="w-4 h-4 mr-2" />
+                {event.category}
+              </div>
+            </div>
             <p className="text-base sm:text-lg md:text-xl mt-4 space-y-4">
               {event?.description.split("\n").map((paragraph, index) => (
                 <p key={index} className="text-justify">
@@ -203,7 +217,7 @@ export default function Show() {
                         Donation Date
                       </label>
                       <div className="flex justify-center">
-                        <Calendar
+                        <CalendarComponent
                           mode="single"
                           selected={data.date}
                           onSelect={(newDate) => setData("date", newDate)}

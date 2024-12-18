@@ -55,7 +55,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'image' => $user->profile_photo_url,
+                    'image' => $user->image,
                     'amount' => $user->donations_sum_amount,
                     'events' => $user->donations()->distinct('event_id')->count(),
                 ];
@@ -71,7 +71,7 @@ class DashboardController extends Controller
                     'id' => $event->id,
                     'title' => $event->title,
                     'current' => $event->donations_sum_amount,
-                    'target' => $event->target_amount,
+                    'target' => $event->donationGoal,
                     'deadline' => Carbon::parse($event->date)->diffForHumans(['parts' => 1]),
                     'status' => Carbon::parse($event->date)->isPast() ? 'completed' : 'active',
                 ];

@@ -17,6 +17,9 @@ return new class extends Migration
             $table->longText("description");
             $table->date("date");
             $table->integer("donationTotal");
+            $table->integer("donationGoal");
+            $table->string("location");
+            $table->enum("category", ["community", "charity", "environment"]);
             $table->string("image")->nullable();
             // $table->foreignIdFor(\App\Models\User::class);
             $table->timestamps();

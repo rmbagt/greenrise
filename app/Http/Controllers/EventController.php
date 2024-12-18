@@ -45,6 +45,9 @@ class EventController extends Controller
             'description' => ['required', 'string'],
             'date' => ['required', 'date'],
             'image' => ['required', 'image', 'max:2048'], // 2MB Max
+            'donationGoal' => ['required', 'integer'],
+            'location' => ['required', 'string'],
+            'category' => ['required', 'string'],
         ]);
 
         if ($request->hasFile('image')) {
@@ -95,6 +98,9 @@ class EventController extends Controller
             'description' => ['required', 'string'],
             'date' => ['required', 'date'],
             'image' => ['nullable', 'image', 'max:2048'], // 2MB Max
+            'donationGoal' => ['required', 'integer'],
+            'location' => ['required', 'string'],
+            'category' => ['required', 'string'],
         ]);
 
         if ($request->hasFile('image')) {

@@ -23,6 +23,9 @@ export type Event = {
   date: string;
   image: string;
   donationTotal: number;
+  donationGoal: number;
+  location: string;
+  category: "community" | "charity" | "environment";
   donations: Donation[];
   created_at: string;
   updated_at: string;

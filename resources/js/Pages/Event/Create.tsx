@@ -21,6 +21,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/Components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 
 export default function Create() {
   const [date, setDate] = useState<Date>();
@@ -32,6 +39,9 @@ export default function Create() {
     description: "",
     date: "",
     image: null as File | null,
+    donationGoal: "",
+    location: "",
+    category: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -147,6 +157,55 @@ export default function Create() {
                   </Popover>
                   {errors.date && (
                     <p className="text-sm text-red-500">{errors.date}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="donationGoal">Donation Goal</Label>
+                  <Input
+                    id="donationGoal"
+                    type="number"
+                    value={data.donationGoal}
+                    onChange={(e) => setData("donationGoal", e.target.value)}
+                    required
+                  />
+                  {errors.donationGoal && (
+                    <p className="text-sm text-red-500">
+                      {errors.donationGoal}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={data.location}
+                    onChange={(e) => setData("location", e.target.value)}
+                    required
+                  />
+                  {errors.location && (
+                    <p className="text-sm text-red-500">{errors.location}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={data.category}
+                    onValueChange={(value) => setData("category", value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="community">Community</SelectItem>
+                      <SelectItem value="charity">Charity</SelectItem>
+                      <SelectItem value="environment">Environment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.category && (
+                    <p className="text-sm text-red-500">{errors.category}</p>
                   )}
                 </div>
 
