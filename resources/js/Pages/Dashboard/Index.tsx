@@ -148,7 +148,7 @@ export default function Dashboard({
                 variants={fadeInVariants}
                 custom={statsData.length + 6}
               >
-                <Card>
+                <Card className="h-full">
                   <CardHeader>
                     <CardTitle>Ongoing Events</CardTitle>
                     <CardDescription>
@@ -192,7 +192,7 @@ export default function Dashboard({
                 variants={fadeInVariants}
                 custom={statsData.length + ongoingEvents.length + 8}
               >
-                <Card>
+                <Card className="h-full">
                   <CardHeader>
                     <CardTitle>Top Donators</CardTitle>
                     <CardDescription>
@@ -243,7 +243,7 @@ export default function Dashboard({
                   10
                 }
               >
-                <Card>
+                <Card className="h-full">
                   <CardHeader>
                     <CardTitle>Donation Requests</CardTitle>
                     <CardDescription>
