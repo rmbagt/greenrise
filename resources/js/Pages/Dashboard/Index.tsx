@@ -264,10 +264,10 @@ export default function Dashboard({
                           11
                         }
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-2">
                           <h4 className="font-medium">{request.title}</h4>
-                          <span className="flex items-center text-sm text-muted-foreground">
-                            <Clock className="mr-1 h-4 w-4" />
+                          <span className="flex items-center text-xs text-muted-foreground w-32">
+                            <Clock className="mr-1 h-4 w-4 flex-shrink-0" />
                             {request.deadline}
                           </span>
                         </div>
