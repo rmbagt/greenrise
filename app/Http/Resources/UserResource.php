@@ -27,6 +27,7 @@ class UserResource extends JsonResource
                     'user' => $donation->user,
                     'amount' => $donation->amount,
                     'date' => $donation->date,
+                    'status' => $donation->status,
                     'created_at' => $donation->created_at,
                 ];
             }),

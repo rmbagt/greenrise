@@ -10,6 +10,10 @@ class Donation extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $casts = [
+        'date' => 'date',
+    ];
+
     function user(){
         return $this->belongsTo(User::class);
     }
@@ -17,5 +21,4 @@ class Donation extends Model
     function event(){
         return $this->belongsTo(Event::class);
     }
-
 }

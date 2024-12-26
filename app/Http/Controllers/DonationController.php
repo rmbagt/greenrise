@@ -3,30 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Services\MidtransService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DonationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $midtransService;
+
+    public function __construct(MidtransService $midtransService)
     {
-        //
+        $this->midtransService = $midtransService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -35,44 +25,57 @@ class DonationController extends Controller
             'date' => ['required', 'date'],
         ]);
 
-        // Parse the date using Carbon to ensure correct format
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $data['user_id'] = auth()->id();
         
         $donation = Donation::create($data);
 
-        return redirect()->route('event.show', $donation->event_id)->with('success', 'Donation created successfully.');
+        $customerDetails = [
+            'first_name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+        ];
+
+        $midtransResponse = $this->midtransService->createTransaction($donation->id, $data['amount'], $customerDetails);
+
+        if ($midtransResponse['success']) {
+            return response()->json([
+                'success' => true,
+                'snap_token' => $midtransResponse['snap_token'],
+                'donation_id' => $donation->id,
+            ]);
+        } else {
+            $donation->delete();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create payment: ' . $midtransResponse['message'],
+            ], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Donation $donation)
+    public function handleCallback(Request $request)
     {
-        //
-    }
+        $orderId = $request->input('order_id');
+        $transactionStatus = $request->input('transaction_status');
+        $fraudStatus = $request->input('fraud_status');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Donation $donation)
-    {
-        //
-    }
+        $donation = Donation::findOrFail($orderId);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Donation $donation)
-    {
-        //
-    }
+        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+            if ($fraudStatus == 'accept') {
+                $donation->status = 'paid';
+                $donation->save();
+                return redirect()->route('event.show', $donation->event_id)->with('success', 'Donation created successfully.');
+            }
+        } elseif ($transactionStatus == 'cancel' || $transactionStatus == 'deny' || $transactionStatus == 'expire') {
+            $donation->status = 'failed';
+            $donation->save();
+            return redirect()->route('event.show', $donation->event_id)->with('error', 'Donation payment failed.');
+        } elseif ($transactionStatus == 'pending') {
+            $donation->status = 'pending';
+            $donation->save();
+            return redirect()->route('event.show', $donation->event_id)->with('info', 'Donation payment is pending.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Donation $donation)
-    {
-        //
+        return redirect()->route('event.index')->with('error', 'Invalid donation.');
     }
 }

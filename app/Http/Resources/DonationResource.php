@@ -21,6 +21,7 @@ class DonationResource extends JsonResource
             'user' => $this->user,
             'amount' => $this->amount,
             'date' => $this->date,
+            'status' => $this->status,
             'created_at' => $this->created_at,
         ];
     }

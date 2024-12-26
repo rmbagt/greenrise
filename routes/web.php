@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show');
 
         Route::post('/donation', [DonationController::class, 'store'])->name('donation.store');
+        
+        Route::post('/donation/callback', [DonationController::class, 'handleCallback'])->name('donation.callback');
 
     });
 });

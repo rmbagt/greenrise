@@ -128,6 +128,7 @@ export default function Index({
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {paginatedEvents.map((event, i) => (
                 <motion.div
+                  key={event.id}
                   initial="hidden"
                   animate="visible"
                   variants={fadeInVariants}

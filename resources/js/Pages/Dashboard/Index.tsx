@@ -155,7 +155,7 @@ export default function Dashboard({
                       Currently active environmental initiatives
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     {ongoingEvents.map((event, index) => (
                       <motion.div
                         key={event.id}
@@ -199,7 +199,7 @@ export default function Dashboard({
                       Most active contributors this month
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     {topDonators.map((donator, index) => (
                       <motion.div
                         key={donator.id}
@@ -250,7 +250,7 @@ export default function Dashboard({
                       Active fundraising campaigns
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     {donationRequests.map((request, index) => (
                       <motion.div
                         key={request.id}

@@ -123,7 +123,7 @@ export default function AdminIndex({
                     }}
                   />
                 </div>
-                <motion.button
+                <motion.div
                   whileHover={{
                     scale: 1.01,
                   }}
@@ -140,13 +140,14 @@ export default function AdminIndex({
                       Create Event
                     </Link>
                   </Button>
-                </motion.button>
+                </motion.div>
               </div>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {paginatedEvents.map((event, i) => (
                 <motion.div
+                  key={event.id}
                   initial="hidden"
                   animate="visible"
                   variants={fadeInVariants}
@@ -193,7 +194,7 @@ export default function AdminIndex({
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between gap-2">
-                      <motion.button
+                      <motion.div
                         whileHover={{
                           scale: 1.02,
                         }}
@@ -212,8 +213,8 @@ export default function AdminIndex({
                             Edit
                           </Link>
                         </Button>
-                      </motion.button>
-                      <motion.button
+                      </motion.div>
+                      <motion.div
                         whileHover={{
                           scale: 1.02,
                         }}
@@ -230,7 +231,7 @@ export default function AdminIndex({
                           <Trash className="mr-2 h-4 w-4" />
                           Delete
                         </Button>
-                      </motion.button>
+                      </motion.div>
                     </CardFooter>
                   </Card>
                 </motion.div>

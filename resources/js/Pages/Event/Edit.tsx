@@ -365,7 +365,7 @@ export default function Edit({ event }: { event: Event }) {
                     custom={7}
                     className="w-full"
                   >
-                    <motion.button
+                    <motion.div
                       whileHover={{
                         scale: 1.01,
                       }}
@@ -381,7 +381,7 @@ export default function Edit({ event }: { event: Event }) {
                       >
                         {processing ? "Updating..." : "Update Event"}
                       </Button>
-                    </motion.button>
+                    </motion.div>
                   </motion.div>
                 </CardFooter>
               </form>

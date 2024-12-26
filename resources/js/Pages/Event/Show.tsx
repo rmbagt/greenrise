@@ -24,6 +24,12 @@ interface PageProps extends InertiaPageProps {
   donators: Donation[] | { data: Donation[] };
 }
 
+declare global {
+  interface Window {
+    snap: any;
+  }
+}
+
 const fadeInVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: (i: number) => ({
@@ -43,6 +49,7 @@ export default function Show() {
   const donators = Array.isArray(props.donators)
     ? props.donators
     : props.donators.data || [];
+  const csrfToken = props.csrf_token as string;
 
   const { data, setData, post, processing, errors, reset } = useForm({
     amount: "",
@@ -54,35 +61,63 @@ export default function Show() {
     setData("amount", presetAmount.toString());
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formattedData = {
       ...data,
       date: data.date ? format(data.date, "yyyy-MM-dd") : undefined,
     };
-    post(route("donation.store"), {
-      data: formattedData,
-      preserveState: true,
-      preserveScroll: true,
-      onSuccess: () => {
-        toast.success("Donation submitted successfully!");
-        reset("amount", "date");
-      },
-      onError: (errors) => {
-        if (errors.amount) {
-          toast.error(errors.amount);
-        } else if (errors.date) {
-          toast.error(errors.date);
-        } else {
-          toast.error("An error occurred while submitting your donation.");
-        }
-      },
-    });
+
+    try {
+      const response = await fetch(route("donation.store"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken,
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        window.snap.pay(result.snap_token, {
+          onSuccess: function (result: any) {
+            toast.success("Donation created successfully!");
+            window.location.href = route("event.show", event.id);
+          },
+          onPending: function (result: any) {
+            toast.info("Donation is pending. Please complete the payment.");
+          },
+          onError: function (result: any) {
+            toast.error("Donation payment failed. Please try again.");
+          },
+          onClose: function () {
+            toast.error(
+              "You closed the payment window before completing the transaction."
+            );
+          },
+        });
+      } else {
+        toast.error(
+          result.message || "An error occurred while processing your donation."
+        );
+      }
+    } catch (error) {
+      toast.error("An error occurred while submitting your donation.");
+    }
+
+    reset("amount", "date");
   };
 
   return (
     <AuthenticatedLayout>
-      <Head title="Event Details" />
+      <Head title="Event Details">
+        <script
+          src="https://app.sandbox.midtrans.com/snap/snap.js"
+          data-client-key={import.meta.env.VITE_MIDTRANS_CLIENT_KEY}
+        ></script>
+      </Head>
       <motion.div
         initial="hidden"
         animate="visible"
@@ -143,13 +178,13 @@ export default function Show() {
                 variants={fadeInVariants}
                 custom={2}
               >
-                <p className="text-base sm:text-lg md:text-xl mt-4 space-y-4">
+                <div className="text-base sm:text-lg md:text-xl mt-4 space-y-4">
                   {event?.description.split("\n").map((paragraph, index) => (
-                    <p key={index} className="text-justify">
+                    <div key={index} className="text-justify">
                       {paragraph}
-                    </p>
+                    </div>
                   ))}
-                </p>
+                </div>
               </motion.div>
 
               <div className="flex flex-col lg:flex-row mt-10 gap-6 lg:gap-10">
@@ -238,24 +273,15 @@ export default function Show() {
                         <div className="grid grid-cols-3 gap-2 py-4">
                           {[5000, 10000, 20000, 50000, 100000, 500000].map(
                             (preset) => (
-                              <motion.button
-                                whileHover={{
-                                  scale: 1.01,
-                                }}
-                                whileTap={{
-                                  scale: 0.98,
-                                }}
-                                className="w-full"
-                              >
+                              <div key={preset} className="w-full">
                                 <Button
-                                  key={preset}
                                   type="button"
                                   className="w-full bg-green-500 hover:bg-green-600 text-sm sm:text-base"
                                   onClick={() => handlePresetAmount(preset)}
                                 >
                                   Rp {preset.toLocaleString()}
                                 </Button>
-                              </motion.button>
+                              </div>
                             )
                           )}
                         </div>
@@ -294,23 +320,13 @@ export default function Show() {
                             {errors.date}
                           </p>
                         )}
-                        <motion.button
-                          whileHover={{
-                            scale: 1.01,
-                          }}
-                          whileTap={{
-                            scale: 0.99,
-                          }}
-                          className="w-full"
+                        <Button
+                          type="submit"
+                          className="w-full mt-4 py-2 text-base sm:text-lg"
+                          disabled={processing}
                         >
-                          <Button
-                            type="submit"
-                            className="w-full mt-4 py-2 text-base sm:text-lg"
-                            disabled={processing}
-                          >
-                            {processing ? "Processing..." : "Submit Donation"}
-                          </Button>
-                        </motion.button>
+                          {processing ? "Processing..." : "Submit Donation"}
+                        </Button>
                       </form>
                     </CardHeader>
                   </motion.div>
