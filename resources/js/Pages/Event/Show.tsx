@@ -225,7 +225,14 @@ export default function Show() {
                                 </p>
                               </div>
                               <div className="font-medium">
-                                Rp {donator.amount.toLocaleString()}
+                                {Number(donator.amount).toLocaleString(
+                                  "id-ID",
+                                  {
+                                    style: "currency",
+                                    currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                  }
+                                )}
                               </div>
                             </div>
                           ))}
@@ -279,7 +286,11 @@ export default function Show() {
                                   className="w-full bg-green-500 hover:bg-green-600 text-sm sm:text-base"
                                   onClick={() => handlePresetAmount(preset)}
                                 >
-                                  Rp {preset.toLocaleString()}
+                                  {Number(preset).toLocaleString("id-ID", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                  })}
                                 </Button>
                               </div>
                             )

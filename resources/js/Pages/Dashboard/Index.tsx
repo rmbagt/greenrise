@@ -95,7 +95,11 @@ export default function Dashboard({
     },
     {
       title: "Your Donations",
-      value: `Rp ${Number(stats.totalDonations).toLocaleString()}`,
+      value: `${Number(stats.totalDonations).toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+      })}`,
       icon: <Trophy className="h-4 w-4 text-amber-600" />,
       description: `${(
         (Number(stats.lastMonthDonations) / Number(stats.totalDonations)) *
@@ -224,7 +228,11 @@ export default function Dashboard({
                           </p>
                         </div>
                         <div className="font-medium">
-                          Rp {Number(donator.amount).toLocaleString()}
+                          {Number(donator.amount).toLocaleString("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            maximumFractionDigits: 0,
+                          })}
                         </div>
                       </motion.div>
                     ))}

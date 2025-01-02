@@ -14,9 +14,21 @@ export function DonationProgress({ current, target }: DonationProgressProps) {
     <div className="space-y-2">
       <Progress value={percentage} className="h-2" />
       <div className="flex justify-between text-sm">
-        <span>Rp {safeCurrent.toLocaleString()} raised</span>
+        <span>
+          {Number(safeCurrent).toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+          })}{" "}
+          raised
+        </span>
         <span className="text-muted-foreground">
-          Rp {safeTarget.toLocaleString()} goal
+          {Number(safeTarget).toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+          })}{" "}
+          goal
         </span>
       </div>
     </div>

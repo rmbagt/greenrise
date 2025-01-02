@@ -157,13 +157,13 @@ export default function Index({
                         {event.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-1">
+                    <CardContent className="flex flex-col justify-end flex-1">
                       <div className="min-h-[80px]">
                         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 text-justify">
                           {event.description}
                         </p>
                       </div>
-                      <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                      <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 ">
                         <span className="flex items-center">
                           <CalendarDays className="mr-1 h-4 w-4 text-green-600 dark:text-green-400" />
                           {new Date(event.date).toLocaleDateString()}
@@ -296,11 +296,12 @@ export default function Index({
                                             donation.amount
                                           )}`}
                                         ></span>
-                                        {donation.amount.toLocaleString(
+                                        {Number(donation.amount).toLocaleString(
                                           "id-ID",
                                           {
                                             style: "currency",
                                             currency: "IDR",
+                                            maximumFractionDigits: 0,
                                           }
                                         )}
                                       </span>
@@ -323,12 +324,14 @@ export default function Index({
                             {event.donations
                               .filter((d) => d.user.id === auth.user.id)
                               .reduce(
-                                (sum, donation) => sum + donation.amount,
+                                (sum, donation) =>
+                                  sum + Number(donation.amount),
                                 0
                               )
                               .toLocaleString("id-ID", {
                                 style: "currency",
                                 currency: "IDR",
+                                maximumFractionDigits: 0,
                               })}
                           </span>
                         </div>

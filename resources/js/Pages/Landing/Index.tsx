@@ -309,7 +309,12 @@ export default function Landing({
                     asChild
                   >
                     <Link href={route("event.index")}>
-                      <Heart className="mr-2 h-4 w-4" /> Donate Rp {amount}
+                      <Heart className="mr-2 h-4 w-4" /> Donate{" "}
+                      {Number(amount).toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        maximumFractionDigits: 0,
+                      })}
                     </Link>
                   </Button>
                 ))}

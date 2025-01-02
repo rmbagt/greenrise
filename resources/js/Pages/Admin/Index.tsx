@@ -176,7 +176,7 @@ export default function AdminIndex({
                         {event.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-1">
+                    <CardContent className="flex flex-col justify-end flex-1">
                       <div className="min-h-[80px]">
                         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 text-justify">
                           {event.description}
