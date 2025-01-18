@@ -73,7 +73,19 @@ Create a MySQL database and configure the connection in your `.env` file. Then r
 php artisan migrate --seed
 ```
 
-5. **Start Development Server:**
+5. **Generate Key:**
+
+```shellscript
+php artisan key:generate
+```
+
+6. **Link Storage:**
+
+```shellscript
+php artisan storage:link
+```
+
+7. **Start Development Server:**
 
 Start both the Laravel and frontend development servers:
 
@@ -82,9 +94,19 @@ php artisan serve
 npm run dev
 ```
 
-6. **Access Application:**
+8. **Access Application:**
 
-Open [http://localhost:8000/](http://localhost:8000/) or your configured development URL in your browser.
+Open [http://localhost:8000/](http://localhost:8000/) or your configured development URL in your browser. You can use the following default account or create your own account.
+
+```
+#Admin
+Email: admin@example.com
+Password: admin
+
+#User
+Email: user@example.com
+Password: user
+```
 
 ---
 
