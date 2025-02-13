@@ -50,7 +50,7 @@ GreenRise is a web application dedicated to facilitating donations for environme
 1.  **Clone Repository:**
 
 ```bash
-git clone https://github.com/reynaldomarchell/greenrise.git
+git clone https://github.com/rmbagt/greenrise.git
 ```
 
 2.  **Install PHP Dependencies:**
@@ -167,6 +167,6 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 ## Contributors
 
-<a href="https://github.com/reynaldomarchell/greenrise/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=reynaldomarchell/greenrise"/>
+<a href="https://github.com/rmbagt/greenrise/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=rmbagt/greenrise"/>
 </a>
